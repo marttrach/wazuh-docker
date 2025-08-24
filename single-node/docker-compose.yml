@@ -17,7 +17,7 @@ services:
       - "31516:514/udp"
       - "31517:55000"
     environment:
-      - INDEXER_URL=https://wazuh.indexer:31518
+      - INDEXER_URL=https://wazuh.indexer:9200
       - INDEXER_USERNAME=admin
       - INDEXER_PASSWORD=SecretPassword
       - FILEBEAT_SSL_VERIFICATION_MODE=full
@@ -77,7 +77,7 @@ services:
     environment:
       - INDEXER_USERNAME=admin
       - INDEXER_PASSWORD=SecretPassword
-      - WAZUH_API_URL=https://wazuh.manager
+      - WAZUH_API_URL=https://wazuh.manager:31519
       - DASHBOARD_USERNAME=kibanaserver
       - DASHBOARD_PASSWORD=kibanaserver
       - API_USERNAME=wazuh-wui
