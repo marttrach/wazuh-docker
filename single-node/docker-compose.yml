@@ -27,17 +27,17 @@ services:
       - API_USERNAME=wazuh-wui
       - API_PASSWORD=MyS3cr37P450r.*-
     volumes:
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_api_configuration:/var/ossec/api/configuration
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_etc:/var/ossec/etc
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_logs:/var/ossec/logs
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_queue:/var/ossec/queue
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_var_multigroups:/var/ossec/var/multigroups
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_integrations:/var/ossec/integrations
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_active_response:/var/ossec/active-response/bin
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_agentless:/var/ossec/agentless
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/wazuh_wodles:/var/ossec/wodles
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/filebeat_etc:/etc/filebeat
-      - /mnt/NEW_PA9A1_2T/Truenas_App/manager/filebeat_var:/var/lib/filebeat
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_api_configuration:/var/ossec/api/configuration
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_etc:/var/ossec/etc
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_logs:/var/ossec/logs
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_queue:/var/ossec/queue
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_var_multigroups:/var/ossec/var/multigroups
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_integrations:/var/ossec/integrations
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_active_response:/var/ossec/active-response/bin
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_agentless:/var/ossec/agentless
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/wazuh_wodles:/var/ossec/wodles
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/filebeat_etc:/etc/filebeat
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/manager/filebeat_var:/var/lib/filebeat
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/root-ca-manager.pem:/etc/ssl/root-ca.pem
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.manager.pem:/etc/ssl/filebeat.pem
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.manager-key.pem:/etc/ssl/filebeat.key
@@ -59,7 +59,7 @@ services:
         soft: 65536
         hard: 65536
     volumes:
-      - /mnt/NEW_PA9A1_2T/Truenas_App/indexer/wazuh-indexer-data:/var/lib/wazuh-indexer
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/indexer/wazuh-indexer-data:/var/lib/wazuh-indexer
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-indexer/config/certs/root-ca.pem
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.indexer-key.pem:/usr/share/wazuh-indexer/config/certs/wazuh.indexer.key
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.indexer.pem:/usr/share/wazuh-indexer/config/certs/wazuh.indexer.pem
@@ -83,8 +83,8 @@ services:
       - API_USERNAME=wazuh-wui
       - API_PASSWORD=MyS3cr37P450r.*-
     volumes:
-      - /mnt/NEW_PA9A1_2T/Truenas_App/dashboard/wazuh-dashboard-config:/usr/share/wazuh-dashboard/data/wazuh/config
-      - /mnt/NEW_PA9A1_2T/Truenas_App/dashboard/wazuh-dashboard-custom:/usr/share/wazuh-dashboard/plugins/wazuh/public/assets/custom
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/dashboard/wazuh-dashboard-config:/usr/share/wazuh-dashboard/data/wazuh/config
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/dashboard/wazuh-dashboard-custom:/usr/share/wazuh-dashboard/plugins/wazuh/public/assets/custom
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.dashboard.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.dashboard-key.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard-key.pem
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-dashboard/certs/root-ca.pem
