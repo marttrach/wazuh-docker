@@ -60,13 +60,13 @@ services:
         hard: 65536
     volumes:
       - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/indexer/wazuh-indexer-data:/var/lib/wazuh-indexer
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-indexer/config/certs/root-ca.pem
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.indexer-key.pem:/usr/share/wazuh-indexer/config/certs/wazuh.indexer.key
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.indexer.pem:/usr/share/wazuh-indexer/config/certs/wazuh.indexer.pem
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/admin.pem:/usr/share/wazuh-indexer/config/certs/admin.pem
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/admin-key.pem:/usr/share/wazuh-indexer/config/certs/admin-key.pem
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer/wazuh.indexer.yml:/usr/share/wazuh-indexer/config/opensearch.yml
-      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/config/opensearch-security/internal_users.yml
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-indexer/certs/root-ca.pem
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.indexer-key.pem:/usr/share/wazuh-indexer/certs/wazuh.indexer.key
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/wazuh.indexer.pem:/usr/share/wazuh-indexer/certs/wazuh.indexer.pem
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/admin.pem:/usr/share/wazuh-indexer/certs/admin.pem
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer_ssl_certs/admin-key.pem:/usr/share/wazuh-indexer/certs/admin-key.pem
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer/wazuh.indexer.yml:/usr/share/wazuh-indexer/opensearch.yml
+      - /mnt/NEW_PA9A1_2T/Truenas_App/Wazuh/wazuhIndexerSslCerts/wazuh-docker/single-node/config/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/opensearch-security/internal_users.yml
 
   wazuh.dashboard:
     image: wazuh/wazuh-dashboard:4.12.0
