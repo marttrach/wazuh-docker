@@ -8,11 +8,11 @@
 # License (version 2) as published by the FSF - Free Software
 # Foundation.
 
-IMAGE_TAG=4.14.3
+IMAGE_TAG=4.14.4
 WAZUH_CURRENT_VERSION=$(curl --silent https://api.github.com/repos/wazuh/wazuh/releases/latest | grep '["]tag_name["]:' | sed -E 's/.*\"([^\"]+)\".*/\1/' | cut -c 2- | sed -e 's/\.//g')
 WAZUH_REGISTRY=docker.io
 
-WAZUH_IMAGE_VERSION="4.14.3"
+WAZUH_IMAGE_VERSION="4.14.4"
 WAZUH_TAG_REVISION="1"
 WAZUH_DEV_STAGE=""
 FILEBEAT_MODULE_VERSION="0.5"
@@ -43,6 +43,7 @@ build() {
 
     if  [ "${WAZUH_DEV_STAGE}" ];then
         FILEBEAT_TEMPLATE_BRANCH="v${FILEBEAT_TEMPLATE_BRANCH}-${WAZUH_DEV_STAGE,,}"
+        IMAGE_TAG="${WAZUH_IMAGE_VERSION}-${WAZUH_DEV_STAGE,,}"
         if ! curl --output /dev/null --silent --head --fail "https://github.com/wazuh/wazuh/tree/${FILEBEAT_TEMPLATE_BRANCH}"; then
             echo "The indicated branch does not exist in the wazuh/wazuh repository: ${FILEBEAT_TEMPLATE_BRANCH}"
             clean 1
@@ -50,14 +51,15 @@ build() {
     else
         if curl --output /dev/null --silent --head --fail "https://github.com/wazuh/wazuh/tree/v${FILEBEAT_TEMPLATE_BRANCH}"; then
             FILEBEAT_TEMPLATE_BRANCH="v${FILEBEAT_TEMPLATE_BRANCH}"
+            IMAGE_TAG="${WAZUH_IMAGE_VERSION}"
         elif curl --output /dev/null --silent --head --fail "https://github.com/wazuh/wazuh/tree/${FILEBEAT_TEMPLATE_BRANCH}"; then
             FILEBEAT_TEMPLATE_BRANCH="${FILEBEAT_TEMPLATE_BRANCH}"
+            IMAGE_TAG="${WAZUH_IMAGE_VERSION}"
         else
             echo "The indicated branch does not exist in the wazuh/wazuh repository: ${FILEBEAT_TEMPLATE_BRANCH}"
             clean 1
         fi
     fi
-
 
     echo WAZUH_VERSION=$WAZUH_IMAGE_VERSION > ../.env
     echo WAZUH_IMAGE_VERSION=$WAZUH_IMAGE_VERSION >> ../.env
@@ -72,18 +74,74 @@ build() {
     source ../.env
     set +a
 
-    if  [ "${MULTIARCH}" ];then
-        docker buildx bake \
-            --file build-images.yml \
-            --push \
-            --set *.platform=linux/amd64,linux/arm64 \
-            --no-cache || clean 1
+    # Define all available components
+    local all_components=("wazuh-indexer" "wazuh-manager" "wazuh-dashboard" "wazuh-agent")
+    local components_to_build=()
+
+    # Determine which components to build
+    if [ -z "${WAZUH_COMPONENT}" ]; then
+        echo "No component specified. Building all components..."
+        components_to_build=("${all_components[@]}")
     else
-        docker buildx bake \
-            --file build-images.yml \
-            --load \
-            --no-cache || clean 1
+        # Validate component
+        case "${WAZUH_COMPONENT}" in
+            wazuh-indexer|wazuh-manager|wazuh-dashboard|wazuh-agent)
+                components_to_build=("${WAZUH_COMPONENT}")
+                ;;
+            *)
+                echo "Error: Unknown component '${WAZUH_COMPONENT}'" >&2
+                clean 1
+                ;;
+        esac
     fi
+
+    # Determine build command and base options
+    if [ "${MULTIARCH}" ]; then
+        build_cmd="docker buildx build --platform linux/amd64,linux/arm64 --push --no-cache"
+    else
+        build_cmd="docker build --no-cache"
+    fi
+
+    # Build each component
+    for component in "${components_to_build[@]}"; do
+        echo "Building ${component} image..."
+
+        # Build common args (used by all components)
+        build_args=(
+            -t "${WAZUH_REGISTRY}/wazuh/${component}:${IMAGE_TAG}"
+            --build-arg WAZUH_VERSION="${WAZUH_IMAGE_VERSION}"
+            --build-arg WAZUH_TAG_REVISION="${WAZUH_TAG_REVISION}"
+        )
+
+        # Add component-specific args
+        case "${component}" in
+            wazuh-indexer)
+                # No additional args for wazuh-indexer
+                ;;
+            wazuh-manager)
+                build_args+=(
+                    --build-arg FILEBEAT_TEMPLATE_BRANCH="${FILEBEAT_TEMPLATE_BRANCH}"
+                    --build-arg WAZUH_FILEBEAT_MODULE="${WAZUH_FILEBEAT_MODULE}"
+                )
+                ;;
+            wazuh-dashboard)
+                build_args+=(
+                    --build-arg WAZUH_UI_REVISION="${WAZUH_UI_REVISION}"
+                )
+                ;;
+            wazuh-agent)
+                # No additional args for wazuh-agent
+                ;;
+        esac
+
+        # Execute build
+        $build_cmd "${build_args[@]}" ${component}/ || clean 1
+        echo "${component} image built successfully!"
+    done
+
+    echo ""
+    echo "Image build process completed!"
+
     return 0
 }
 
@@ -93,10 +151,11 @@ help() {
     echo
     echo "Usage: $0 [OPTIONS]"
     echo
-    echo "    -d, --dev <ref>              [Optional] Set the development stage you want to build, example rc2 or beta1, not used by default."
+    echo "    -d, --dev <ref>              [Optional] Set the development stage you want to build, example rc4 or beta1, not used by default."
     echo "    -f, --filebeat-module <ref>  [Optional] Set Filebeat module version. By default ${FILEBEAT_MODULE_VERSION}."
     echo "    -r, --revision <rev>         [Optional] Package revision. By default ${WAZUH_TAG_REVISION}"
     echo "    -rg, --registry <reg>        [Optional] Set the Docker registry to push the images."
+    echo "    -c, --component <comp>       [Required] Set the Wazuh component to build. Accepted values: 'wazuh-indexer', 'wazuh-manager', 'wazuh-dashboard', 'wazuh-agent'."
     echo "    -v, --version <ver>          [Optional] Set the Wazuh version should be builded. By default, ${WAZUH_IMAGE_VERSION}."
     echo "    -m, --multiarch              [Optional] Enable multi-architecture builds."
     echo "    -h, --help                   Show this help."
@@ -152,6 +211,14 @@ main() {
         "-v"|"--version")
             if [ -n "$2" ]; then
                 WAZUH_IMAGE_VERSION="$2"
+                shift 2
+            else
+                help 1
+            fi
+            ;;
+        "-c"|"--component")
+            if [ -n "${2}" ]; then
+                WAZUH_COMPONENT="${2}"
                 shift 2
             else
                 help 1
