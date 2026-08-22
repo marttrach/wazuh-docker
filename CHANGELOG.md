@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [4.14.7]
+
+### Added
+
+- None
+
+### Changed
+
+- Change upload and download methods ([#2504](https://github.com/wazuh/wazuh-docker/pull/2504))
+- PR revamp modifications 4.x ([#2445](https://github.com/wazuh/wazuh-docker/pull/2445))
+
+### Fixed
+
+- Fix bumper workflow failure when bump produces no changes ([#2534](https://github.com/wazuh/wazuh-docker/pull/2534))
+
+### Deleted
+
+- None
+
 ## [4.14.6]
 
 ### Added
@@ -275,7 +294,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- None
+- Change runner name for Codebuild ([#2474](https://github.com/wazuh/wazuh-docker/pull/2474))
+- PR revamp modifications LTS ([#2449](https://github.com/wazuh/wazuh-docker/pull/2449))
 
 ### Fixed
 
