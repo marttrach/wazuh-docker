@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [4.14.8]
+
+### Added
+
+- None
+
+### Changed
+
+- Change Codebuild runners to Github runners ([#2580](https://github.com/wazuh/wazuh-docker/pull/2580))
+
+### Fixed
+
+- None
+
+### Deleted
+
+- None
+
 ## [4.14.7]
 
 ### Added
